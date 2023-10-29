@@ -390,6 +390,13 @@ public class Grid extends Canvas {
 	private boolean selectionEnabled = true;
 
 	/**
+	 * Cache value whether any column has an
+	 * aggregating footer. Depending on this value,
+	 * some optimizations can be used.
+	 */
+	private boolean hasFooterAggregate = false;
+
+	/**
 	 * Default height of items. This value is used for <code>GridItem</code>s with a
 	 * height of -1.
 	 */
@@ -10379,6 +10386,41 @@ public class Grid extends Canvas {
 		return wordWrapRowHeader;
 	}
 
+	/**
+	 * @return whether any Column has a footer using aggregates  
+	 */
+	public boolean hasFooterAggregate() {
+        checkWidget();
+		return this.hasFooterAggregate;
+	}
+
+	/**
+	 * MUST ONLY BE CALLED BY GridColumn#setFooterAggregate
+	 * @param hasFooterAggregate
+	 */
+	void setHasFooterAggregate(boolean hasFooterAggregate) {
+        checkWidget();
+		this.hasFooterAggregate = hasFooterAggregate;
+	}
+
+	/**
+	 * MUST ONLY BE CALLED BY GridColumn#setFooterAggregate
+	 * @param hasFooterAggregate
+	 */
+	void updateHasFooterAggregate(){
+        checkWidget();
+		final int columnCount = getColumnCount();
+		for(int i=0; i<columnCount; i++){
+			final GridColumn col = getColumn(i);
+			if (col.getFooterAggregate()!=null){
+				this.hasFooterAggregate = true;
+				return ;
+			}
+		}
+		this.hasFooterAggregate = false;
+	}
+
+	
 	/**
 	 * Refresh hasData {@link GridItem} state if {@link Grid} is virtual
 	 */

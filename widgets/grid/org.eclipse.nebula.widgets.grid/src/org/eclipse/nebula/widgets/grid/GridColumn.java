@@ -23,6 +23,7 @@ package org.eclipse.nebula.widgets.grid;
 
 import java.util.Locale;
 
+import org.eclipse.nebula.widgets.grid.aggregator.IFooterAggregateProvider;
 import org.eclipse.nebula.widgets.grid.internal.DefaultColumnFooterRenderer;
 import org.eclipse.nebula.widgets.grid.internal.DefaultColumnHeaderRenderer;
 import org.eclipse.swt.SWT;
@@ -75,6 +76,22 @@ public class GridColumn extends Item {
 	 * Default width of the column.
 	 */
 	private static final int DEFAULT_WIDTH = 10;
+
+	/**
+	 * When aggregating for the footer, consider only the root elements.
+	 */
+	public static final int FOOTERAGGREGATE_ROOT_ONLY = 1;
+	/**
+	 * When aggregating for the footer, recursve through the tree but only
+	 * consider leaves.
+	 */
+	public static final int FOOTERAGGREGATE_LEAVES_ONLY = 2;
+
+	/**
+	 * When aggregating for the footer, recursve through the tree but only
+	 * consider nodes with a parent and a child.
+	 */
+	public static final int FOOTERAGGREGATE_MIDNODE = 4;
 
 	/**
 	 * Parent table.
@@ -188,6 +205,10 @@ public class GridColumn extends Item {
 
 	private String headerTooltip = null;
 	int index;
+
+	private IFooterAggregateProvider footerAggregate;
+
+	private int footerAggregateRecursionStyle;
 
 	/**
 	 * Constructs a new instance of this class given its parent (which must be a
@@ -366,7 +387,11 @@ public class GridColumn extends Item {
 		return headerRenderer;
 	}
 
-	GridFooterRenderer getFooterRenderer() {
+	/**
+	 * Returns the footer renderer
+	 * @return footer renderer
+	 */
+	public GridFooterRenderer getFooterRenderer() {
 		return footerRenderer;
 	}
 
@@ -1564,5 +1589,56 @@ public class GridColumn extends Item {
 		if( minimumWidth > getWidth() ) {
 			setWidth(minimumWidth, true);
 		}
+	}
+
+	/**
+	 * Is there any aggregation wanted for this column?
+	 * @return The current footer aggregator.
+	 */
+	public IFooterAggregateProvider getFooterAggregate() {
+        checkWidget();
+		return this.footerAggregate;
+	}
+
+	/**
+	 * Sets the aggregate to display in this column. If the argument is non-null,
+	 * the parent Grid's footer is automatically enabled.
+	 * <b>Attention:</b> if an aggregate provider is set, all footer style options
+	 * ({@link #setFooterFont(Font)}, {@link #setFooterImage(Image)}, {@link #setFooterRenderer(GridFooterRenderer)},
+	 * {@link #setFooterText(String)}) will be fetched from that provider upon refresh and hence override
+	 * any values that might have been previously set. 
+	 * @param footerAggregate The aggregate; null to disable.
+	 */
+	public void setFooterAggregate(final IFooterAggregateProvider footerAggregate) {
+        checkWidget();
+		this.footerAggregate = footerAggregate;
+		if (footerAggregate!=null){
+			this.parent.setFooterVisible(true);
+			this.parent.setHasFooterAggregate(true);
+		}else{
+			this.parent.updateHasFooterAggregate();
+		}
+	}
+
+	/**
+	 * Sets the recursion style for the footer aggregate.
+	 * @param footerRecursionStyle .
+	 * @see #FOOTERAGGREGATE_LEAVES_ONLY
+	 * @see #FOOTERAGGREGATE_ROOT_ONLY
+	 */
+	public void setFooterAggregateRecursionStyle(final int footerRecursionStyle){
+		this.footerAggregateRecursionStyle = footerRecursionStyle;
+	}
+
+	/**
+	 * The footer aggregator's recursion style.
+	 * @return .
+	 */
+	public int getFooterAggregateRecursionStyle() {
+		return this.footerAggregateRecursionStyle;
+	}
+
+	void setFooterRecursionStyle(int footerRecursionStyle) {
+		this.footerAggregateRecursionStyle = footerRecursionStyle;
 	}
 }
