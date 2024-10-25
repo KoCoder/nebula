@@ -26,4 +26,11 @@ Contributors:
 	<artifactId>org.eclipse.nebula.widgets.datechooser</artifactId>
 	<packaging>eclipse-plugin</packaging>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.platform</groupId>
+			<artifactId>org.eclipse.jface.databinding</artifactId>
+			<version>${jface-version}</version>
+		</dependency>
+	</dependencies>
 </project>
