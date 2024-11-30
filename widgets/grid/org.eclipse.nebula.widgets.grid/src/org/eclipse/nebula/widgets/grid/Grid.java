@@ -8003,8 +8003,9 @@ public class Grid extends Canvas {
 		}
 
 		redraw();
-		// Need to update the scrollbars see see 375327
-		updateScrollbars();
+		// Need to update the scrollbars see see 375327 - I couldn't find an appropriate Issue with that reference
+		// The `GridTreeViewer` appears to function well without invoking this method, filtering items out much more quickly.
+		// updateScrollbars(); 
 	}
 
 	/**
