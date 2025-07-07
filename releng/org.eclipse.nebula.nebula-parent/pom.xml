@@ -56,16 +56,16 @@ Contributors:
 				<version>${tycho-version}</version>
 				<configuration>
 					<sourceReferences>
-						<generate>true</generate>
+						<generate>false</generate>
 					</sourceReferences>
 				</configuration>
-				<dependencies>
+				<!-- <dependencies>
 					<dependency>
 						<groupId>org.eclipse.tycho.extras</groupId>
 						<artifactId>tycho-sourceref-jgit</artifactId>
 						<version>${tycho-extras-version}</version>
 					</dependency>
-				</dependencies>
+				</dependencies> -->
 			</plugin>
 
 			<plugin>
